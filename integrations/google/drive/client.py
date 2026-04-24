@@ -34,13 +34,20 @@ class DriveClient:
 
     def get_or_create_folder(self, name: str, parent_id: str | None = None) -> str:
         """Return existing folder ID or create it."""
-        parent_id = parent_id or settings.google_drive_root_folder_id
-        query = f"name='{name}' and mimeType='{MIME_FOLDER}' and '{parent_id}' in parents and trashed=false"
+        raw = parent_id or settings.google_drive_root_folder_id or ""
+        # Strip whitespace/comments that may come from .env inline comments
+        effective_parent = raw.strip().split("#")[0].strip()
+        if effective_parent:
+            parent_clause = f"and '{effective_parent}' in parents "
+        else:
+            parent_clause = "and 'root' in parents "
+            effective_parent = None
+        query = f"name='{name}' and mimeType='{MIME_FOLDER}' {parent_clause}and trashed=false"
         results = self._svc.files().list(q=query, fields="files(id,name)").execute()
         files = results.get("files", [])
         if files:
             return files[0]["id"]
-        return self.create_folder(name, parent_id)
+        return self.create_folder(name, effective_parent)
 
     def list_folder(self, folder_id: str) -> list[dict]:
         results = self._svc.files().list(
