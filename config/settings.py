@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     # N8N
     n8n_base_url: str = ""
     n8n_api_key: str = ""
+    n8n_boldstore_tag_id: str = "akucO9y04icJCSvB"
 
     # Google
     google_service_account_file: str = "service_account.json"
