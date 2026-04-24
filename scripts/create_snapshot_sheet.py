@@ -16,6 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+# Direct imports avoid pulling in GHL/N8N deps
 from google.oauth2 import service_account
 import gspread
 from googleapiclient.discovery import build
