@@ -22,7 +22,7 @@ def main():
     print("Scaffolding Drive folder structure...")
     folder_ids = drive.scaffold_boldstore_structure()
     for name, fid in folder_ids.items():
-        link = drive.get_web_link(fid)
+        link = f"https://drive.google.com/drive/folders/{fid}"
         print(f"  {name:<30} {fid}  {link}")
 
     print("\nBootstrapping master Google Sheet...")
