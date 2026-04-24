@@ -1,4 +1,4 @@
-"""GHL REST API client — wraps the LeadConnector v1 API."""
+"""GHL REST API client — wraps the LeadConnector v2 API (sub-account PIT)."""
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
 
