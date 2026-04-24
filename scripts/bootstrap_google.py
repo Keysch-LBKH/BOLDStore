@@ -26,7 +26,7 @@ def main():
         print(f"  {name:<30} {fid}  {link}")
 
     print("\nBootstrapping master Google Sheet...")
-    sid = sheets.bootstrap_master_sheet()
+    sid = sheets.bootstrap_master_sheet(folder_id=folder_ids.get("Spreadsheets"))
     print(f"  Master sheet ID: {sid}")
 
     print("\nDone. Copy the IDs above into your .env file.")

@@ -73,12 +73,15 @@ class SheetsClient:
 
     # ── BOLDStore master sheet bootstrap ──────────────────────────────────────
 
-    def bootstrap_master_sheet(self, sheet_id: str | None = None) -> str:
+    def bootstrap_master_sheet(self, sheet_id: str | None = None, folder_id: str | None = None) -> str:
         """
-        Ensure the master tracking sheet has all required tabs.
+        Create (or open existing) master tracking sheet and ensure all tabs exist.
         Returns the sheet ID.
         """
         sid = sheet_id or settings.google_sheets_master_id
+        if not sid:
+            ss = self.create_sheet("BOLDStore — Master Tracker", folder_id=folder_id)
+            sid = ss.id
         tabs = {
             "Contacts": ["id", "firstName", "lastName", "email", "phone", "locationId", "createdAt", "tags"],
             "Opportunities": ["id", "name", "contactId", "pipelineId", "stageId", "status", "monetaryValue", "updatedAt"],
