@@ -1,6 +1,7 @@
 """Google Sheets client — read/write structured data."""
 import gspread
 from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 from config import settings
 
@@ -9,6 +10,8 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 
+MIME_SHEET = "application/vnd.google-apps.spreadsheet"
+
 
 class SheetsClient:
     def __init__(self):
@@ -16,14 +19,20 @@ class SheetsClient:
             settings.google_service_account_file, scopes=SCOPES
         )
         self._gc = gspread.authorize(creds)
+        self._drive = build("drive", "v3", credentials=creds)
 
     # ── Workbook helpers ──────────────────────────────────────────────────────
 
     def open_by_id(self, sheet_id: str) -> gspread.Spreadsheet:
         return self._gc.open_by_key(sheet_id)
 
-    def create_sheet(self, title: str, folder_id: str | None = None) -> gspread.Spreadsheet:
-        return self._gc.create(title, folder_id=folder_id)
+    def create_sheet(self, title: str, folder_id: str | None = None) -> str:
+        """Create a Google Sheet via the Drive API and return its ID."""
+        meta = {"name": title, "mimeType": MIME_SHEET}
+        if folder_id:
+            meta["parents"] = [folder_id]
+        f = self._drive.files().create(body=meta, fields="id").execute()
+        return f["id"]
 
     # ── Read ──────────────────────────────────────────────────────────────────
 
@@ -80,8 +89,7 @@ class SheetsClient:
         """
         sid = sheet_id or settings.google_sheets_master_id
         if not sid:
-            ss = self.create_sheet("BOLDStore — Master Tracker", folder_id=folder_id)
-            sid = ss.id
+            sid = self.create_sheet("BOLDStore — Master Tracker", folder_id=folder_id)
         tabs = {
             "Contacts": ["id", "firstName", "lastName", "email", "phone", "locationId", "createdAt", "tags"],
             "Opportunities": ["id", "name", "contactId", "pipelineId", "stageId", "status", "monetaryValue", "updatedAt"],
