@@ -86,6 +86,17 @@ class DriveClient:
                 return
             raise
 
+    def move_to_folder(self, file_id: str, folder_id: str) -> None:
+        """Move a file or folder into a new parent, removing all previous parents."""
+        current = self._svc.files().get(fileId=file_id, fields="parents").execute()
+        previous = ",".join(current.get("parents", []))
+        self._svc.files().update(
+            fileId=file_id,
+            addParents=folder_id,
+            removeParents=previous,
+            fields="id,parents",
+        ).execute()
+
     def get_web_link(self, file_id: str) -> str:
         f = self._svc.files().get(fileId=file_id, fields="webViewLink").execute()
         return f.get("webViewLink", "")
