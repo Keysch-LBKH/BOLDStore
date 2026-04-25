@@ -1,4 +1,10 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _strip_comment(v: str) -> str:
+    """Strip inline .env comments — some python-dotenv versions don't do this."""
+    return v.split("#")[0].strip()
 
 
 class Settings(BaseSettings):
@@ -26,6 +32,17 @@ class Settings(BaseSettings):
     app_port: int = 8000
     webhook_base_url: str = ""
     log_level: str = "INFO"
+
+    @field_validator(
+        "ghl_api_key", "ghl_agency_api_key", "ghl_location_id", "ghl_webhook_secret",
+        "n8n_base_url", "n8n_api_key", "n8n_boldstore_tag_id",
+        "google_service_account_file", "google_drive_root_folder_id", "google_sheets_master_id",
+        "webhook_base_url",
+        mode="before",
+    )
+    @classmethod
+    def strip_inline_comments(cls, v: str) -> str:
+        return _strip_comment(v) if isinstance(v, str) else v
 
 
 settings = Settings()

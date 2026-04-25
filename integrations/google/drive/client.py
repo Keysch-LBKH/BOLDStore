@@ -34,9 +34,7 @@ class DriveClient:
 
     def get_or_create_folder(self, name: str, parent_id: str | None = None) -> str:
         """Return existing folder ID or create it."""
-        raw = parent_id or settings.google_drive_root_folder_id or ""
-        # Strip whitespace/comments that may come from .env inline comments
-        effective_parent = raw.strip().split("#")[0].strip()
+        effective_parent = (parent_id or settings.google_drive_root_folder_id or "").strip()
         if effective_parent:
             parent_clause = f"and '{effective_parent}' in parents "
         else:
