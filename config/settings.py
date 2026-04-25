@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     # Google
     google_service_account_file: str = "service_account.json"
     google_drive_root_folder_id: str = ""
+    google_drive_owner_email: str = ""
     google_sheets_master_id: str = ""
 
     # App
@@ -36,7 +37,8 @@ class Settings(BaseSettings):
     @field_validator(
         "ghl_api_key", "ghl_agency_api_key", "ghl_location_id", "ghl_webhook_secret",
         "n8n_base_url", "n8n_api_key", "n8n_boldstore_tag_id",
-        "google_service_account_file", "google_drive_root_folder_id", "google_sheets_master_id",
+        "google_service_account_file", "google_drive_root_folder_id",
+        "google_drive_owner_email", "google_sheets_master_id",
         "webhook_base_url",
         mode="before",
     )

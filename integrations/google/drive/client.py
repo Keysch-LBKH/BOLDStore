@@ -73,12 +73,18 @@ class DriveClient:
         f = self._svc.files().create(body=meta, media_body=media, fields="id").execute()
         return f["id"]
 
-    def share(self, file_id: str, email: str, role: str = "reader"):
-        """Share a file or folder with an email address."""
-        self._svc.permissions().create(
-            fileId=file_id,
-            body={"type": "user", "role": role, "emailAddress": email},
-        ).execute()
+    def share(self, file_id: str, email: str, role: str = "writer"):
+        """Share a file or folder with an email address. Silently skips if already shared."""
+        try:
+            self._svc.permissions().create(
+                fileId=file_id,
+                body={"type": "user", "role": role, "emailAddress": email},
+                sendNotificationEmail=False,
+            ).execute()
+        except Exception as exc:
+            if "already" in str(exc).lower():
+                return
+            raise
 
     def get_web_link(self, file_id: str) -> str:
         f = self._svc.files().get(fileId=file_id, fields="webViewLink").execute()
