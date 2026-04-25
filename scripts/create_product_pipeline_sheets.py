@@ -218,13 +218,13 @@ def main():
     ss = gc.open_by_key(args.sheet_id)
     url = f"https://docs.google.com/spreadsheets/d/{args.sheet_id}/edit"
 
-    print("Setting up Brand Profile tab...")
-    ws_brand = get_or_create_tab(ss, "Brand Profile")
+    print("Setting up Config tab...")
+    ws_brand = get_or_create_tab(ss, "Config")
     setup_brand_profile(ws_brand)
     print("  Done.")
 
-    print("Setting up Item Input tab...")
-    ws_items = get_or_create_tab(ss, "Item Input")
+    print("Setting up Items tab...")
+    ws_items = get_or_create_tab(ss, "Items")
     setup_item_input(ws_items)
     print("  Done.")
 
