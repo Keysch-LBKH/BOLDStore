@@ -108,6 +108,12 @@ class DriveClient:
         for sub in ["GHL-Snapshots", "N8N-Workflows", "Config-Exports"]:
             ids[f"Snapshots/{sub}"] = self.get_or_create_folder(sub, ids["Snapshots"])
 
+        # Store snapshot master folder
+        ids["Snapshots/Store Snapshots"] = self.get_or_create_folder("Store Snapshots", ids["Snapshots"])
+        ids["Snapshots/Store Snapshots/BOLDStore Master"] = self.get_or_create_folder(
+            "BOLDStore Master", ids["Snapshots/Store Snapshots"]
+        )
+
         # Sub-folders under SOPs
         for sub in ["GHL", "N8N", "Google", "Onboarding", "Expansion"]:
             ids[f"SOPs/{sub}"] = self.get_or_create_folder(sub, ids["SOPs"])

@@ -69,6 +69,12 @@ def build_assets_data() -> list[list]:
         ["R0. Brand Store URL", "Custom Value", "Foundation",
          "Stores the online store or Linktree URL used across all email/SMS links",
          "Update to live store URL before going live.", "TRUE", "", ""],
+        ["R0. Sale Items Pipeline Sheet", "Google Sheet", "Foundation",
+         "Two-tab workbook: Brand Profile (voice, prompts, store config) + Item Input (products queued for N8N). "
+         "N8N reads approved rows, generates enhanced descriptions/SEO/social copy via Claude, exports product + social CSVs.",
+         "CLONE FROM BOLDStore Master folder when onboarding a new client. "
+         "Update Brand Profile tab with client brand data before first N8N run. "
+         "Sheet ID: 1HUajSpYtnnP2iM4vWCR8dJxGeAl947FTzH7SoTNmvOU", "FALSE", "Done", ""],
         ["R1. Drop-List OptIn Form", "Form", "Drop List",
          "Captures name, email, and phone from fans opting into drop announcements",
          "Embed on the brand's landing page or link in bio.", "FALSE", "", ""],
@@ -202,7 +208,14 @@ def populate_snapshot_sheet(sheet_id: str, snapshot_name: str) -> str:
         [""],
         ["Brand: Ghost Print Co. — Premium screenprint streetwear. Tattoo-culture rooted."],
         [""],
-        ["Tabs:"],
+        ["── CLONE CHECKLIST ─────────────────────────────────────────────────────────────"],
+        ["When deploying this snapshot to a new client, clone ALL of the following:"],
+        ["  1. GHL Snapshot       — import via GHL > Settings > Snapshots"],
+        ["  2. Sale Items Sheet   — clone from Drive > Snapshots > Store Snapshots > BOLDStore Master"],
+        ["                          Update Brand Profile tab with client brand data before first N8N run"],
+        ["  3. N8N Workflows      — duplicate and update webhook URLs + sheet IDs for the new account"],
+        [""],
+        ["── TABS ────────────────────────────────────────────────────────────────────────"],
         ["  Assets       — Every GHL asset in this snapshot (workflows, tags, forms, etc.)"],
         ["  Modules      — How assets are grouped into functional modules (R0–R4)"],
         ["  Stakeholders — Who interacts with the snapshot and what they need"],

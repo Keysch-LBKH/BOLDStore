@@ -97,7 +97,7 @@ class SheetsClient:
             "SOPs": ["title", "category", "version", "driveLink", "lastReviewed", "owner"],
             "N8N-Workflows": ["id", "name", "active", "webhookPath", "description", "lastUpdated"],
             "Webhook-Log": ["timestamp", "event", "contactId", "payload_summary", "status"],
-            "Expansion-Tracker": ["clientName", "locationId", "snapshotApplied", "n8nCloned", "driveCloned", "goLiveDate", "notes"],
+            "Expansion-Tracker": ["clientName", "locationId", "snapshotApplied", "saleItemsCloned", "n8nCloned", "driveCloned", "goLiveDate", "notes"],
         }
         for tab, headers in tabs.items():
             self.ensure_tab(sid, tab, headers)
