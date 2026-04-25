@@ -88,8 +88,13 @@ class SheetsClient:
         Returns the sheet ID.
         """
         sid = sheet_id or settings.google_sheets_master_id
+        print(f"  [DEBUG] sheet_id arg={repr(sheet_id)}  settings.master_id={repr(settings.google_sheets_master_id)}  sid={repr(sid)}")
         if not sid:
+            print("  [DEBUG] No existing sheet ID — creating new sheet via Drive API")
             sid = self.create_sheet("BOLDStore — Master Tracker", folder_id=folder_id)
+            print(f"  [DEBUG] create_sheet returned: {repr(sid)}")
+        else:
+            print(f"  [DEBUG] Using existing sheet ID: {repr(sid)}")
         tabs = {
             "Contacts": ["id", "firstName", "lastName", "email", "phone", "locationId", "createdAt", "tags"],
             "Opportunities": ["id", "name", "contactId", "pipelineId", "stageId", "status", "monetaryValue", "updatedAt"],
