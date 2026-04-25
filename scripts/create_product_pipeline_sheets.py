@@ -1,21 +1,13 @@
 """
 Create and populate the Ghost Print Co. product pipeline sheets.
 
-Two sheets are needed — create each as a blank Google Sheet, share with
-the service account as Editor, then pass both IDs to this script.
+Pass the ID of a single Google Sheet workbook (shared with the service
+account as Editor). The script will find or create two named tabs:
+  - "Brand Profile"  — voice, tone, store config, AI prompt templates
+  - "Item Input"     — product rows; Status = Approved triggers N8N
 
 Usage:
-    python scripts/create_product_pipeline_sheets.py \
-        --brand-sheet-id <id> \
-        --items-sheet-id <id>
-
-Sheet 1 — Brand Profile:
-    Brand voice, tone, audience, store config, and AI prompt templates.
-    Fill this in once per client. N8N reads it on every workflow run.
-
-Sheet 2 — Item Input:
-    One row per product. Set Status = Approved to trigger the N8N workflow.
-    N8N writes enhanced content back into this sheet, then exports CSVs.
+    python scripts/create_product_pipeline_sheets.py --sheet-id <workbook_id>
 """
 import argparse
 import sys
@@ -164,37 +156,45 @@ def setup_item_input(ws: gspread.Worksheet) -> None:
     })
 
 
+def get_or_create_tab(ss: gspread.Spreadsheet, title: str, rows: int = 1000, cols: int = 26) -> gspread.Worksheet:
+    existing = {ws.title: ws for ws in ss.worksheets()}
+    if title in existing:
+        return existing[title]
+    return ss.add_worksheet(title=title, rows=rows, cols=cols)
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Set up Ghost Print Co. product pipeline sheets."
+        description="Set up Ghost Print Co. product pipeline tabs inside a single workbook."
     )
-    parser.add_argument("--brand-sheet-id", required=True,
-                        help="ID of blank Google Sheet for Brand Profile (shared with service account).")
-    parser.add_argument("--items-sheet-id", required=True,
-                        help="ID of blank Google Sheet for Item Input (shared with service account).")
+    parser.add_argument("--sheet-id", required=True,
+                        help="ID of the Google Sheet workbook shared with the service account as Editor.")
     args = parser.parse_args()
 
     creds = service_account.Credentials.from_service_account_file(
         settings.google_service_account_file, scopes=SCOPES
     )
     gc = gspread.authorize(creds)
+    ss = gc.open_by_key(args.sheet_id)
+    url = f"https://docs.google.com/spreadsheets/d/{args.sheet_id}/edit"
 
-    print("Setting up Brand Profile sheet...")
-    brand_ss = gc.open_by_key(args.brand_sheet_id)
-    setup_brand_profile(brand_ss.sheet1)
-    print(f"  Done. URL: https://docs.google.com/spreadsheets/d/{args.brand_sheet_id}/edit")
+    print("Setting up Brand Profile tab...")
+    ws_brand = get_or_create_tab(ss, "Brand Profile")
+    setup_brand_profile(ws_brand)
+    print("  Done.")
 
-    print("Setting up Item Input sheet...")
-    items_ss = gc.open_by_key(args.items_sheet_id)
-    setup_item_input(items_ss.sheet1)
-    print(f"  Done. URL: https://docs.google.com/spreadsheets/d/{args.items_sheet_id}/edit")
+    print("Setting up Item Input tab...")
+    ws_items = get_or_create_tab(ss, "Item Input")
+    setup_item_input(ws_items)
+    print("  Done.")
 
     print(f"""
-Done. Add to your .env:
-  GHOST_PRINT_BRAND_SHEET_ID={args.brand_sheet_id}
-  GHOST_PRINT_ITEMS_SHEET_ID={args.items_sheet_id}
+Done. Workbook URL: {url}
 
-Next: Fill in the Brand Profile values, then add products to Item Input.
+Add to your .env:
+  GHOST_PRINT_PIPELINE_SHEET_ID={args.sheet_id}
+
+Next: Fill in the Brand Profile tab values, then add products to Item Input.
 Set Status = Approved on any row to queue it for the N8N workflow.
 """)
 

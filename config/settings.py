@@ -28,9 +28,8 @@ class Settings(BaseSettings):
     google_drive_owner_email: str = ""
     google_sheets_master_id: str = ""
 
-    # Ghost Print Co. product pipeline
-    ghost_print_brand_sheet_id: str = ""
-    ghost_print_items_sheet_id: str = ""
+    # Ghost Print Co. product pipeline (single workbook, multiple tabs)
+    ghost_print_pipeline_sheet_id: str = ""
 
     # App
     app_env: str = "development"
@@ -43,7 +42,7 @@ class Settings(BaseSettings):
         "n8n_base_url", "n8n_api_key", "n8n_boldstore_tag_id",
         "google_service_account_file", "google_drive_root_folder_id",
         "google_drive_owner_email", "google_sheets_master_id",
-        "ghost_print_brand_sheet_id", "ghost_print_items_sheet_id",
+        "ghost_print_pipeline_sheet_id",
         "webhook_base_url",
         mode="before",
     )
