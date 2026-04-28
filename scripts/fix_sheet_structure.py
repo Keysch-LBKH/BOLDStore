@@ -20,20 +20,23 @@ SCOPES = [
 
 # ── Updated Items headers ─────────────────────────────────────────────────────
 ITEMS_HEADERS = [
-    # ── Input (user fills) ──────────────────────────────────────────
+    # ── Input (user / form fills) ────────────────────────────────────
     "SKU",
     "Product Name",
     "Category",           # t-shirt | hoodie | hat | tote | other
     "Base Colour",
+    "Brand",              # default: Ghost Print Co.
+    "Year",               # collection year
     "Price",
+    "Compare At Price",
     "Sizes Available",    # comma-separated: S,M,L,XL,XXL
-    "Available Quantity", # total stock for this product
+    "Available Quantity",
     "Raw Notes",          # design notes from the artist
     "Image URL 1",
     "Image URL 2",
     "Image URL 3",
-    "Status",             # Draft | Approved | Processing | Done | Error
-    # ── Output (N8N fills) ──────────────────────────────────────────
+    "Status",             # Draft | Pending Approval | Approved | Processing | Done | Error
+    # ── AI output (N8N fills after entry) ───────────────────────────
     "Enhanced Title",
     "Enhanced Description",
     "SEO Title",
@@ -41,8 +44,13 @@ ITEMS_HEADERS = [
     "Image Alt Text",
     "Social Caption",
     "Social Hashtags",
+    # ── Post-approval output (N8N fills after approval) ─────────────
     "Product URL",
-    "Handle",             # URL slug — was "Shopify Handle"
+    "Handle",
+    "Enhanced Image URL 1",
+    "Enhanced Image URL 2",
+    "Enhanced Image URL 3",
+    "Social Status",      # Pending | Scheduled | Posted
     "Error Notes",
 ]
 
